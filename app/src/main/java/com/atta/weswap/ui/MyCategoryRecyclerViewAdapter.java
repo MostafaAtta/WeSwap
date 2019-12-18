@@ -1,12 +1,13 @@
 package com.atta.weswap.ui;
 
-import androidx.recyclerview.widget.RecyclerView;
-
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
+import androidx.recyclerview.widget.RecyclerView;
+
+import com.atta.weswap.R;
 import com.atta.weswap.ui.HomeFragment.OnListFragmentInteractionListener;
 import com.atta.weswap.ui.dummy.DummyContent.DummyItem;
 

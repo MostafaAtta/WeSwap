@@ -1,4 +1,4 @@
-package com.atta.weswap;
+package com.atta.weswap.model;
 
 public class User {
 

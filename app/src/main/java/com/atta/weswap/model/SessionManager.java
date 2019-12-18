@@ -1,8 +1,11 @@
-package com.atta.weswap;
+package com.atta.weswap.model;
 
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
+
+import com.atta.weswap.LoginActivity;
+import com.atta.weswap.MainActivity;
 
 public class SessionManager {
 

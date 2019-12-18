@@ -5,6 +5,8 @@ import android.os.Handler;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import com.atta.weswap.model.SessionManager;
+
 public class SplashScreenActivity extends AppCompatActivity {
 
     // Splash screen timer
