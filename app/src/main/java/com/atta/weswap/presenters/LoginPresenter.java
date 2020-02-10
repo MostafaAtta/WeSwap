@@ -23,6 +23,7 @@ public class LoginPresenter implements LoginContract.Presenter{
         mContext = context;
     }
 
+
     @Override
     public void login(String email, String password) {
 
@@ -66,6 +67,5 @@ public class LoginPresenter implements LoginContract.Presenter{
         });
 
     }
-
 
 }

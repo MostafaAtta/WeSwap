@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -22,6 +23,8 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     TextView newAccount;
 
     Button login;
+
+    ProgressBar progressBar;
 
     private LoginPresenter loginPresenter;
 
@@ -44,6 +47,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
         passwordText  = findViewById(R.id.password);
         login  = findViewById(R.id.login_btn);
         newAccount  = findViewById(R.id.to_register);
+        progressBar = findViewById(R.id.progress_bar);
 
         newAccount.setOnClickListener(this);
         login.setOnClickListener(this);
@@ -54,6 +58,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     @Override
     public void showError(String error) {
 
+        progressBar.setVisibility(View.INVISIBLE);
         Toast.makeText(this, error, Toast.LENGTH_LONG).show();
         login.setEnabled(true);
     }
@@ -75,6 +80,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
     @Override
     public void navigateToMain() {
 
+        progressBar.setVisibility(View.INVISIBLE);
         Intent intent = new Intent(LoginActivity.this, MainActivity.class);
         startActivity(intent);
         finish();
@@ -123,6 +129,7 @@ public class LoginActivity extends AppCompatActivity implements LoginContract.Vi
                 return;
             }
 
+            progressBar.setVisibility(View.VISIBLE);
             //progressDialog.show();
             loginPresenter.login(emailText.getText().toString(), passwordText.getText().toString());
         } else if (view == newAccount) {

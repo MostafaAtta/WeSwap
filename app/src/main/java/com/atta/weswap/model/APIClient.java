@@ -12,7 +12,9 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class APIClient {
 
 
-    public static final String BASE_URL = "http://52.15.188.41/weswap/public/index.php/";
+    private static final String BASE_URL = "http://52.15.188.41/weswap/public/index.php/";
+
+    static final String Images_BASE_URL = "http://52.15.188.41/weswap/images/";
 
     private static APIClient mInstance;
     private Retrofit retrofit;
