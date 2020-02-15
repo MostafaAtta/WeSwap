@@ -102,7 +102,7 @@
         android:layout_marginStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_email" >
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_phone" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/password"
@@ -160,7 +160,7 @@
         android:layout_marginStart="16dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_password_confirm" >
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_email" >
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/phone"
@@ -168,7 +168,7 @@
             android:layout_height="match_parent"
             android:layout_gravity="center"
             android:hint="@string/phone"
-            android:inputType="textPassword"
+            android:inputType="phone"
             android:maxLines="1"
             android:singleLine="true"
             android:paddingStart="12dp"
@@ -207,7 +207,7 @@
         android:textColor="@android:color/white"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_phone" />
+        app:layout_constraintTop_toBottomOf="@+id/textInputLayout_password_confirm" />
 
 
     <ProgressBar
