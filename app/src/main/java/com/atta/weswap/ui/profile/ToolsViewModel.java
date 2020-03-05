@@ -1,4 +1,4 @@
-package com.atta.weswap.ui.tools;
+package com.atta.weswap.ui.profile;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;

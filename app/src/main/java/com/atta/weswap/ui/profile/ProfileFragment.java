@@ -1,4 +1,4 @@
-package com.atta.weswap.ui.tools;
+package com.atta.weswap.ui.profile;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -14,7 +14,7 @@ import androidx.lifecycle.ViewModelProviders;
 
 import com.atta.weswap.R;
 
-public class ToolsFragment extends Fragment {
+public class ProfileFragment extends Fragment {
 
     private ToolsViewModel toolsViewModel;
 
@@ -22,7 +22,7 @@ public class ToolsFragment extends Fragment {
                              ViewGroup container, Bundle savedInstanceState) {
         toolsViewModel =
                 ViewModelProviders.of(this).get(ToolsViewModel.class);
-        View root = inflater.inflate(R.layout.fragment_tools, container, false);
+        View root = inflater.inflate(R.layout.fragment_profile, container, false);
         final TextView textView = root.findViewById(R.id.text_tools);
         toolsViewModel.getText().observe(this, new Observer<String>() {
             @Override
