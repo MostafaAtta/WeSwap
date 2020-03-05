@@ -34,6 +34,11 @@ public interface APIService {
     Call<CategoriesResult> getCategories();
 
 
+    @GET("get_subcategories/{cat_id}")
+    Call<SubcategoriesResult> getSubcategories(
+            @Path("cat_id") int catId
+    );
+
     @FormUrlEncoded
     @POST("update_user")
     Call<Result> updateProfile(

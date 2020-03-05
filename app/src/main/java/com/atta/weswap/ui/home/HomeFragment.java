@@ -55,7 +55,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         myAdapter = new CategoriesAdapter(categories, getContext());
         //DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
 
-        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 3));
+        recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));
 
         //recyclerView.addItemDecoration(decoration);
 

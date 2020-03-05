@@ -24,4 +24,15 @@
     <string name="menu_send">Send</string>
     <string name="new_user">New User?  Register Here</string>
     <string name="logout">Logout</string>
+    <string name="title">Title</string>
+    <string name="category">Category</string>
+    <string name="desc">Description</string>
+    <string name="condition">Condition</string>
+    <string name="type">Type</string>
+    <string name="brand">Brand</string>
+    <string name="warranty">Warranty</string>
+    <string name="operator">Operator</string>
+    <string name="gender">Gender</string>
+    <string name="location">Ad Location</string>
+    <string name="submit">Submit</string>
 </resources>
