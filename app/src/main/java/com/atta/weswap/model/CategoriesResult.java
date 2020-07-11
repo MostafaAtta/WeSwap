@@ -12,6 +12,13 @@ public class CategoriesResult {
     @SerializedName("categories")
     private ArrayList<Category> categories;
 
+    @SerializedName("areas")
+    private ArrayList<Area> areas;
+
+    @SerializedName("conditions")
+    private ArrayList<Condition> conditions;
+
+
     public CategoriesResult(Boolean error, ArrayList<Category> categories) {
         this.error = error;
         this.categories = categories;
@@ -23,5 +30,13 @@ public class CategoriesResult {
 
     public ArrayList<Category> getCategories() {
         return categories;
+    }
+
+    public ArrayList<Area> getAreas() {
+        return areas;
+    }
+
+    public ArrayList<Condition> getConditions() {
+        return conditions;
     }
 }

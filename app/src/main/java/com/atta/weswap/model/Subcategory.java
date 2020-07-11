@@ -7,13 +7,14 @@ public class Subcategory implements Serializable {
 
     private String subcategory, image;
 
-    private int id, catId ;
+    private int id, catId, numOfAds;
 
-    public Subcategory(int id, String subcategory, int catId, String image) {
+    public Subcategory(int id, String subcategory, int catId, String image, int numOfAds) {
         this.subcategory = subcategory;
         this.image = image;
         this.id = id;
         this.catId = catId;
+        this.numOfAds = numOfAds;
     }
 
     public String getSubcategory() {
@@ -30,5 +31,9 @@ public class Subcategory implements Serializable {
 
     public int getCatId() {
         return catId;
+    }
+
+    public int getNumOfAds() {
+        return numOfAds;
     }
 }

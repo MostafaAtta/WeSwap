@@ -1,4 +1,4 @@
-package com.atta.weswap.ui.home;
+package com.atta.weswap.ui;
 
 import android.os.Bundle;
 import android.view.LayoutInflater;
@@ -8,14 +8,16 @@ import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atta.weswap.R;
-import com.atta.weswap.model.CategoriesAdapter;
 import com.atta.weswap.model.Category;
+import com.atta.weswap.model.adapters.CategoriesAdapter;
 import com.atta.weswap.presenters.HomeContract;
 import com.atta.weswap.presenters.HomePresenter;
+import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.ArrayList;
 
@@ -39,6 +41,10 @@ public class HomeFragment extends Fragment implements HomeContract.View {
         homePresenter.getCategories();
 
         recyclerView = root.findViewById(R.id.recycler);
+        FloatingActionButton fab = root.findViewById(R.id.home_fab);
+
+        fab.setOnClickListener(view -> Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
+                .navigate(HomeFragmentDirections.actionNavHomeToNewAdFragment()));
 
         return root;
     }
@@ -52,7 +58,7 @@ public class HomeFragment extends Fragment implements HomeContract.View {
     @Override
     public void showRecyclerView(ArrayList<Category> categories) {
 
-        myAdapter = new CategoriesAdapter(categories, getContext());
+        myAdapter = new CategoriesAdapter(categories, getContext(), getActivity());
         //DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
 
         recyclerView.setLayoutManager(new GridLayoutManager(getContext(), 2));

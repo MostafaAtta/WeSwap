@@ -1,7 +1,7 @@
-package com.atta.weswap.model;
+package com.atta.weswap.model.adapters;
 
+import android.app.Activity;
 import android.content.Context;
-import android.content.Intent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,10 +9,13 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.atta.weswap.ProductsActivity;
 import com.atta.weswap.R;
+import com.atta.weswap.model.APIClient;
+import com.atta.weswap.model.Category;
+import com.atta.weswap.ui.HomeFragmentDirections;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -22,12 +25,14 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
 
     private List<Category> categories;
     private Context context;
+    private Activity activity;
 
 
-    public CategoriesAdapter(ArrayList<Category> data, Context context) {
+    public CategoriesAdapter(ArrayList<Category> data, Context context, Activity activity) {
 
         this.categories = data;
         this.context = context;
+        this.activity = activity;
     }
 
     @NonNull
@@ -68,9 +73,11 @@ public class CategoriesAdapter extends RecyclerView.Adapter<CategoriesAdapter.My
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Intent intent = new Intent(context.getApplicationContext(), ProductsActivity.class);
+
+                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(HomeFragmentDirections.actionNavHomeToSubCategoriesFragment(category.getId()));
+                /*Intent intent = new Intent(context.getApplicationContext(), ProductsActivity.class);
                 intent.putExtra("cat_id", category.getId());
-                context.startActivity(intent);
+                context.startActivity(intent);*/
             }
         });
 

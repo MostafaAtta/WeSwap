@@ -1,4 +1,4 @@
-package com.atta.weswap;
+package com.atta.weswap.ui;
 
 import android.app.AlertDialog;
 import android.content.DialogInterface;
@@ -8,15 +8,24 @@ import android.graphics.BitmapFactory;
 import android.graphics.Color;
 import android.os.Bundle;
 import android.util.Base64;
+import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.Spinner;
 
-import androidx.appcompat.app.AppCompatActivity;
+import androidx.annotation.NonNull;
+import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.atta.weswap.R;
+import com.atta.weswap.model.Area;
 import com.atta.weswap.model.Category;
+import com.atta.weswap.model.Condition;
 import com.atta.weswap.model.ImagesAdapter;
 import com.atta.weswap.model.SessionManager;
 import com.atta.weswap.model.Subcategory;
@@ -29,13 +38,16 @@ import com.google.android.material.textfield.TextInputEditText;
 import com.google.android.material.textfield.TextInputLayout;
 
 import java.io.ByteArrayOutputStream;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
+public class NewAdFragment extends Fragment implements NewAdContract.View, View.OnClickListener, AdapterView.OnItemSelectedListener {
 
-public class NewAdActivity extends AppCompatActivity implements NewAdContract.View, View.OnClickListener {
 
     NewAdPresenter newAdPresenter;
 
@@ -47,6 +59,8 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
 
     AlertDialog alert;
 
+    Button addBtn;
+
     TextInputEditText titleEditText, categoryEditText, phoneEditText, emailEditText, brandEditText,
             warrantyEditText, operatorEditText, genderEditText, conditionEditText, typeEditText,
             descriptionEditText, locationEditText;
@@ -54,7 +68,9 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
     TextInputLayout brandInputLayout, warrantyInputLayout, operatorInputLayout, genderInputLayout,
             typeInputLayout;
 
-    Spinner conditionSpinner, typeSpinner, brandSpinner, warrantySpinner, operatorSpinner, genderSpinner;
+    Spinner conditionSpinner, typeSpinner, brandSpinner, warrantySpinner, operatorSpinner, genderSpinner, areasSpinner;
+
+    ArrayAdapter<String> conditionAdapter, typeAdapter, warrantyAdapter, operatorAdapter, genderAdapter, areasAdapter;
 
     Category category;
 
@@ -71,10 +87,14 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
 
     private RecyclerView recyclerView;
 
-    @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_new_ad);
+    View root;
+
+    private String phone, title, description;
+    private int userId, categoryId, subcategoryId, conditionId, brandId;
+
+    public View onCreateView(@NonNull LayoutInflater inflater,
+                             ViewGroup container, Bundle savedInstanceState) {
+        root = inflater.inflate(R.layout.fragment_new_ad, container, false);
 
         initiateViews();
 
@@ -87,39 +107,46 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
         images = new HashMap<String, String>();
 
 
-        newAdPresenter = new NewAdPresenter(this, this);
+        newAdPresenter = new NewAdPresenter(this, getContext());
 
         newAdPresenter.getCategories();
 
+        return root;
     }
 
+
     private void initiateViews() {
-        titleEditText = findViewById(R.id.title_et);
-        emailEditText = findViewById(R.id.email_et);
-        emailEditText.setText(SessionManager.getInstance(this).getEmail());
-        phoneEditText = findViewById(R.id.phone_et);
-        phoneEditText.setText(SessionManager.getInstance(this).getUserPhone());
+        titleEditText = root.findViewById(R.id.title_et);
+        emailEditText = root.findViewById(R.id.email_et);
+        emailEditText.setText(SessionManager.getInstance(getContext()).getEmail());
+        phoneEditText = root.findViewById(R.id.phone_et);
+        phoneEditText.setText(SessionManager.getInstance(getContext()).getUserPhone());
 
-        brandInputLayout = findViewById(R.id.textInputLayout_brand);
-        warrantyInputLayout = findViewById(R.id.textInputLayout_warranty);
-        operatorInputLayout = findViewById(R.id.textInputLayout_operator);
-        genderInputLayout = findViewById(R.id.textInputLayout_gender);
-        typeInputLayout = findViewById(R.id.textInputLayout_type);
+        brandInputLayout = root.findViewById(R.id.textInputLayout_brand);
+        warrantyInputLayout = root.findViewById(R.id.textInputLayout_warranty);
+        operatorInputLayout = root.findViewById(R.id.textInputLayout_operator);
+        genderInputLayout = root.findViewById(R.id.textInputLayout_gender);
+        typeInputLayout = root.findViewById(R.id.textInputLayout_type);
 
-        typeSpinner = findViewById(R.id.type_spinner);
-        conditionSpinner = findViewById(R.id.condition_spinner);
-        operatorSpinner = findViewById(R.id.operator_spinner);
-        genderSpinner = findViewById(R.id.gender_spinner);
-        brandSpinner = findViewById(R.id.brand_spinner);
-        warrantySpinner = findViewById(R.id.warranty_spinner);
+        typeSpinner = root.findViewById(R.id.type_spinner);
+        conditionSpinner = root.findViewById(R.id.condition_spinner);
+        operatorSpinner = root.findViewById(R.id.operator_spinner);
+        genderSpinner = root.findViewById(R.id.gender_spinner);
+        brandSpinner = root.findViewById(R.id.brand_spinner);
+        warrantySpinner = root.findViewById(R.id.warranty_spinner);
+        areasSpinner = root.findViewById(R.id.location_spinner);
 
-        categoryEditText = findViewById(R.id.cat_et);
+        categoryEditText = root.findViewById(R.id.cat_et);
         categoryEditText.setOnClickListener(this);
 
-        addImage = findViewById(R.id.imageView2);
+        addImage = root.findViewById(R.id.imageView2);
         addImage.setOnClickListener(this);
 
-        recyclerView = findViewById(R.id.images_recycler);
+
+        addBtn = root.findViewById(R.id.add_btn);
+        addBtn.setOnClickListener(this);
+
+        recyclerView = root.findViewById(R.id.images_recycler);
     }
 
 
@@ -132,7 +159,7 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
 
         categories = getCategoryName(categoriesArray);
 
-        builder = new AlertDialog.Builder(this);
+        builder = new AlertDialog.Builder(getContext());
         builder.setTitle("Main categories");
         builder.setItems(categories, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
@@ -160,6 +187,9 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
                 categoryName = category.getCategory() + "  > " + subcategory.getSubcategory();
 
                 categoryEditText.setText(categoryName);
+
+
+                newAdPresenter.getAreas();
 
                 switch (subcategory.getSubcategory()){
                     case "Mobile Phones":
@@ -201,6 +231,89 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
         alert = builder.create();
         alert.show();
     }
+
+    @Override
+    public void setAreas(ArrayList<Area> areas) {
+
+        ArrayList<String> areaNames = getAreaNames(areas);
+
+        areasAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, areaNames);
+        areasAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        areasSpinner.setAdapter(areasAdapter);
+        areasSpinner.setOnItemSelectedListener(this);
+    }
+
+    @Override
+    public void setConditions(ArrayList<Condition> conditions) {
+
+        ArrayList<String> conditionNames = getConditionNames(conditions);
+
+        conditionAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, conditionNames);
+        conditionAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        conditionSpinner.setAdapter(conditionAdapter);
+        conditionSpinner.setOnItemSelectedListener(this);
+
+
+    }
+
+    @Override
+    public void addAd() {
+
+        if (!validate()){
+            return;
+        }
+
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy/MM/dd HH:mm", Locale.getDefault());
+
+        String creationTime = sdf.format(new Date());
+        phone = SessionManager.getInstance(getContext()).getUserPhone();
+        userId = SessionManager.getInstance(getContext()).getUserId();
+
+        //Ad ad = new Ad(userId, );
+        //newAdPresenter.createAd(ad);
+
+    }
+
+    private boolean validate() {
+        boolean valid = true;
+
+
+        if (category == null) {
+
+            showMessage("Select the Category");
+            valid = false;
+        }
+
+        if (title == null) {
+
+            showMessage("Select the Title");
+            valid = false;
+        }
+
+        return valid;
+    }
+
+    private ArrayList<String> getAreaNames(ArrayList<Area> areas) {
+
+        ArrayList<String> areaNames = new ArrayList<>();
+
+        for (Area area : areas){
+            areaNames.add(area.getAreaName());
+        }
+        return areaNames;
+    }
+
+    private ArrayList<String> getConditionNames(ArrayList<Condition> conditions) {
+
+        ArrayList<String> conditionNames = new ArrayList<>();
+
+        for (Condition condition : conditions){
+            conditionNames.add(condition.getConditionName());
+        }
+        return conditionNames;
+    }
+
 
     public static String[] getCategoryName(ArrayList<Category> arr)
     {
@@ -245,15 +358,17 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
             newAdPresenter.getCategories();
         }else if (view == addImage){
             getImages2();
+        }else if (view == addBtn){
+            addAd();
         }
     }
 
 
     public void getImages2(){
         ImagePicker.create(this)
-                .returnMode(ReturnMode.NONE) // set whether pick and / or camera action should return immediate result or not.
+                .returnMode(ReturnMode.NONE) //set whether pick and / or camera action should return immediate result or not.
                 .folderMode(true) // folder mode (false by default)
-                .toolbarFolderTitle("Folder") // folder selection title
+                .toolbarFolderTitle("Select folder") // folder selection title
                 .toolbarImageTitle("Tap to select") // image selection title
                 .toolbarArrowColor(Color.BLACK) // Toolbar 'up' arrow color
                 .multi() // multi mode (default mode)
@@ -265,7 +380,7 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
 
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
 
         if (ImagePicker.shouldHandle(requestCode, resultCode, data)) {
             // Get a list of picked images
@@ -294,8 +409,8 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
                 if (imagesBitmap.size() == 8){
                     addImage.setVisibility(View.GONE);
                 }
-                ImagesAdapter myAdapter = new ImagesAdapter(this, imagesBitmap);
-                recyclerView.setLayoutManager(new LinearLayoutManager(this, LinearLayoutManager.HORIZONTAL, false));
+                ImagesAdapter myAdapter = new ImagesAdapter(getContext(), imagesBitmap);
+                recyclerView.setLayoutManager(new LinearLayoutManager(getContext(), LinearLayoutManager.HORIZONTAL, false));
                 recyclerView.setAdapter(myAdapter);
             }
 
@@ -320,4 +435,16 @@ public class NewAdActivity extends AppCompatActivity implements NewAdContract.Vi
         return encode;
     }
 
+    @Override
+    public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
+
+        if (adapterView.getId() == conditionSpinner.getId()){
+            conditionId = i;
+        }
+    }
+
+    @Override
+    public void onNothingSelected(AdapterView<?> adapterView) {
+
+    }
 }

@@ -1,8 +1,11 @@
 package com.atta.weswap.model;
 
+import java.util.Map;
+
 import retrofit2.Call;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
+import retrofit2.http.FieldMap;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.POST;
@@ -113,6 +116,25 @@ public interface APIService {
             @Path("id") int id
     );
 
+
+    @FormUrlEncoded
+    @POST("create_ad")
+    Call<Result> createAd(
+            @Field("title") String title,
+            @Field("user_id") int userId,
+            @Field("category_id") int categoryId,
+            @Field("subcategory_id") int subcategoryId,
+            @Field("description") String description,
+            @Field("condition_id") int conditionId,
+            @Field("brand_id") int brandId,
+            @Field("phone") String phone,
+            @Field("creation_time") String creationTime,
+            @FieldMap Map<String, String> images ,
+            @FieldMap Map<String, String> imagesNames
+    );
+
+    @GET("get_areas")
+    Call<AreaResult> getAreas();
 
 
 }
