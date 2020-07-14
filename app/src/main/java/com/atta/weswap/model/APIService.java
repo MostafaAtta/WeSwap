@@ -42,18 +42,26 @@ public interface APIService {
             @Path("cat_id") int catId
     );
 
+    @GET("get_ads/{subcategory_id}")
+    Call<AdsResult> getAds(
+            @Path("subcategory_id") int subcategoryId
+    );
+
     @FormUrlEncoded
     @POST("update_user")
     Call<Result> updateProfile(
             @Field("id") int id,
             @Field("name") String name,
-            @Field("add_id") int addId,
-            @Field("date_of_birth") String DateOfBirth,
-            @Field("job") String job,
-            @Field("location") String location
+            @Field("phone") String phone
 
     );
 
+
+    @FormUrlEncoded
+    @POST("get_profile")
+    Call<Profile> getProfile(
+            @Field("user_id") int userId
+    );
 
 
     @PUT("update_password/{id}/{old_password}/{password}")
@@ -76,41 +84,6 @@ public interface APIService {
     );
 
 
-    @FormUrlEncoded
-    @POST("add_address")
-    Call<Result> addAddress(
-            @Field("user_id") int userId,
-            @Field("floor") String floor,
-            @Field("apartmentNumber") String apartmentNumber,
-            @Field("buildingNumber") String buildingNumber,
-            @Field("area") String area,
-            @Field("addressName") String addressName,
-            @Field("fullAddress") String fullAddress,
-            @Field("street") String street,
-            @Field("landMark") String landMark,
-            @Field("latitude") float latitude,
-            @Field("longitude") float longitude
-
-    );
-
-
-    @PUT("edit_address/{id}/{user_id}/{floor}/{apartmentNumber}/{buildingNumber}/{area}/{addressName}/{fullAddress}/{street}/{landMark}/{latitude}/{longitude}")
-    Call<Result> editAddress(
-            @Path("id") int id,
-            @Path("user_id") int userId,
-            @Path("floor") String floor,
-            @Path("apartmentNumber") String apartmentNumber,
-            @Path("buildingNumber") String buildingNumber,
-            @Path("area") String area,
-            @Path("addressName") String addressName,
-            @Path("fullAddress") String fullAddress,
-            @Path("street") String street,
-            @Path("landMark") String landMark,
-            @Path("latitude") float latitude,
-            @Path("longitude") float longitude
-
-    );
-
     @DELETE("remove_address/{id}")
     Call<Result> deleteAddress(
             @Path("id") int id
@@ -124,9 +97,12 @@ public interface APIService {
             @Field("user_id") int userId,
             @Field("category_id") int categoryId,
             @Field("subcategory_id") int subcategoryId,
+            @Field("swap_category_id") int swapCategoryId,
+            @Field("swap_subcategory_id") int swapSubcategoryId,
             @Field("description") String description,
             @Field("condition_id") int conditionId,
             @Field("brand_id") int brandId,
+            @Field("area_id") int areaId,
             @Field("phone") String phone,
             @Field("creation_time") String creationTime,
             @FieldMap Map<String, String> images ,

@@ -1,6 +1,6 @@
 package com.atta.weswap.presenters;
 
-import com.atta.weswap.model.Subcategory;
+import com.atta.weswap.model.Ad;
 
 import java.util.ArrayList;
 
@@ -10,12 +10,12 @@ public interface AdsContract {
 
         void showMessage(String error);
 
-        void showRecyclerView(ArrayList<Subcategory> subcategories);
+        void showRecyclerView(ArrayList<Ad> ads);
 
     }
 
     interface Presenter{
-        void getSubcategories(int catId) ;
+        void getAds(int subcategoryId) ;
 
     }
 }

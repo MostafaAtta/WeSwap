@@ -12,20 +12,23 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atta.weswap.R;
-import com.atta.weswap.model.adapters.SubcategoriesAdapter;
-import com.atta.weswap.model.Subcategory;
-import com.atta.weswap.presenters.SubcategoriesContract;
+import com.atta.weswap.model.Ad;
+import com.atta.weswap.model.adapters.AdsAdapter;
+import com.atta.weswap.presenters.AdsContract;
+import com.atta.weswap.presenters.AdsPresenter;
 
 import java.util.ArrayList;
 
 
-public class AdsFragment extends Fragment implements SubcategoriesContract.View {
+public class AdsFragment extends Fragment implements AdsContract.View {
 
     private View root;
 
     private RecyclerView recyclerView;
 
-    private SubcategoriesAdapter myAdapter;
+    private AdsAdapter myAdapter;
+
+    private AdsPresenter adsPresenter;
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -34,8 +37,11 @@ public class AdsFragment extends Fragment implements SubcategoriesContract.View 
         root =  inflater.inflate(R.layout.fragment_ads, container, false);
 
         recyclerView = root.findViewById(R.id.ads_recycler);
+
+        int subcategoryId = AdsFragmentArgs.fromBundle(getArguments()).getSubcatId();
+        adsPresenter = new AdsPresenter(this, getContext());
+        adsPresenter.getAds(subcategoryId);
 /*
-        int catId = SubcategoriesFragmentArgs.fromBundle(getArguments()).getCatId();
 
         SubcategoriesPresenter subcategoriesPresenter = new SubcategoriesPresenter(this, getContext());
         subcategoriesPresenter.getSubcategories(catId);*/
@@ -50,9 +56,8 @@ public class AdsFragment extends Fragment implements SubcategoriesContract.View 
     }
 
     @Override
-    public void showRecyclerView(ArrayList<Subcategory> subcategories) {
-
-        myAdapter = new SubcategoriesAdapter(subcategories, getContext(), getActivity());
+    public void showRecyclerView(ArrayList<Ad> ads ) {
+        myAdapter = new AdsAdapter(ads, getContext(), getActivity());
 
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
 

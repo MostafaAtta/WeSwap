@@ -31,7 +31,11 @@
         android:id="@+id/nav_profile"
         android:name="com.atta.weswap.ui.ProfileFragment"
         android:label="@string/menu_profile"
-        tools:layout="@layout/fragment_profile" />
+        tools:layout="@layout/fragment_profile" >
+        <action
+            android:id="@+id/action_nav_profile_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
 
     <fragment
         android:id="@+id/nav_my_ads"
@@ -85,5 +89,9 @@
     <fragment
         android:id="@+id/newAdFragment"
         android:name="com.atta.weswap.ui.NewAdFragment"
-        android:label="New Ad" />
+        android:label="New Ad" >
+        <action
+            android:id="@+id/action_newAdFragment_to_nav_home"
+            app:destination="@id/nav_home" />
+    </fragment>
 </navigation>

@@ -44,4 +44,6 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="new_ad">New Ad</string>
     <string name="white_space">  </string>
+    <string name="save">Save</string>
+    <string name="swap_category">Swap with</string>
 </resources>

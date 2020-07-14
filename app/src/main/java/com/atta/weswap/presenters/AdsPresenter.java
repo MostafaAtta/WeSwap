@@ -3,8 +3,8 @@ package com.atta.weswap.presenters;
 import android.content.Context;
 
 import com.atta.weswap.model.APIClient;
-import com.atta.weswap.model.SubcategoriesResult;
-import com.atta.weswap.model.Subcategory;
+import com.atta.weswap.model.Ad;
+import com.atta.weswap.model.AdsResult;
 
 import java.util.ArrayList;
 
@@ -24,24 +24,24 @@ public class AdsPresenter implements AdsContract.Presenter {
     }
 
     @Override
-    public void getSubcategories(int catId) {
+    public void getAds(int subcategoryId) {
 
         //defining the call
-        Call<SubcategoriesResult> call = APIClient.getInstance().getApi().getSubcategories(catId);
+        Call<AdsResult> call = APIClient.getInstance().getApi().getAds(subcategoryId);
 
         //calling the api
-        call.enqueue(new Callback<SubcategoriesResult>() {
+        call.enqueue(new Callback<AdsResult>() {
             @Override
-            public void onResponse(Call<SubcategoriesResult> call, Response<SubcategoriesResult> response) {
+            public void onResponse(Call<AdsResult> call, Response<AdsResult> response) {
 
                 if (response.body() != null){
-                    if (response.body().getSubcategories() != null){
+                    if (response.body().getAds() != null){
 
-                        ArrayList<Subcategory> subcategories = response.body().getSubcategories();
+                        ArrayList<Ad> ads = response.body().getAds();
 
-                        if (subcategories.size() > 0){
+                        if (ads.size() > 0){
 
-                            mView.showRecyclerView(subcategories);
+                            mView.showRecyclerView(ads);
                         }else {
                             mView.showMessage("Categories not found , try again later");
                         }
@@ -54,7 +54,7 @@ public class AdsPresenter implements AdsContract.Presenter {
             }
 
             @Override
-            public void onFailure(Call<SubcategoriesResult> call, Throwable t) {
+            public void onFailure(Call<AdsResult> call, Throwable t) {
 
                 mView.showMessage(t.getMessage());
             }

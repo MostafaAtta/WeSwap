@@ -15,15 +15,19 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ImageView;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atta.weswap.R;
+import com.atta.weswap.model.Ad;
 import com.atta.weswap.model.Area;
+import com.atta.weswap.model.Brand;
 import com.atta.weswap.model.Category;
 import com.atta.weswap.model.Condition;
 import com.atta.weswap.model.ImagesAdapter;
@@ -61,36 +65,44 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
 
     Button addBtn;
 
+    ProgressBar progressBar;
+
     TextInputEditText titleEditText, categoryEditText, phoneEditText, emailEditText, brandEditText,
             warrantyEditText, operatorEditText, genderEditText, conditionEditText, typeEditText,
-            descriptionEditText, locationEditText;
+            descriptionEditText, locationEditText, swapCategoryEditText;
 
     TextInputLayout brandInputLayout, warrantyInputLayout, operatorInputLayout, genderInputLayout,
             typeInputLayout;
 
     Spinner conditionSpinner, typeSpinner, brandSpinner, warrantySpinner, operatorSpinner, genderSpinner, areasSpinner;
 
-    ArrayAdapter<String> conditionAdapter, typeAdapter, warrantyAdapter, operatorAdapter, genderAdapter, areasAdapter;
+    ArrayAdapter<String> conditionAdapter, typeAdapter, warrantyAdapter, operatorAdapter, genderAdapter,
+            areasAdapter, brandAdapter;
 
-    Category category;
+    Category category, swapCategory;
 
-    Subcategory subcategory;
+    Subcategory subcategory, swapSubcategory;
 
-    String categoryName;
+    String categoryName, swapCategoryName;
 
     ImageView addImage;
 
     List<Bitmap> imagesBitmap;
     List<String> imagesString, imagesName;
-
+    ArrayList<String> warranty;
     Map<String, String> imagesNames, images;
-
+    ArrayList<Area> areas;
+    ArrayList<Category> categoriesArray;
+    ArrayList<Subcategory> subcategoriesArray;
+    ArrayList<Condition> conditions;
+    ArrayList<Brand> brands;
     private RecyclerView recyclerView;
 
     View root;
 
     private String phone, title, description;
-    private int userId, categoryId, subcategoryId, conditionId, brandId;
+    private int userId, categoryId, subcategoryId, conditionId, brandId, areaId, swapCategoryId, swapSubcategoryId;
+    private String warrantyValue;
 
     public View onCreateView(@NonNull LayoutInflater inflater,
                              ViewGroup container, Bundle savedInstanceState) {
@@ -121,6 +133,7 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
         emailEditText.setText(SessionManager.getInstance(getContext()).getEmail());
         phoneEditText = root.findViewById(R.id.phone_et);
         phoneEditText.setText(SessionManager.getInstance(getContext()).getUserPhone());
+        descriptionEditText = root.findViewById(R.id.description_et);
 
         brandInputLayout = root.findViewById(R.id.textInputLayout_brand);
         warrantyInputLayout = root.findViewById(R.id.textInputLayout_warranty);
@@ -136,8 +149,13 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
         warrantySpinner = root.findViewById(R.id.warranty_spinner);
         areasSpinner = root.findViewById(R.id.location_spinner);
 
+        progressBar = root.findViewById(R.id.progress_bar);
+
         categoryEditText = root.findViewById(R.id.cat_et);
         categoryEditText.setOnClickListener(this);
+
+        swapCategoryEditText = root.findViewById(R.id.swap_cat_et);
+        swapCategoryEditText.setOnClickListener(this);
 
         addImage = root.findViewById(R.id.imageView2);
         addImage.setOnClickListener(this);
@@ -157,6 +175,8 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
 
     public void showCategoriesDialog(final ArrayList<Category> categoriesArray) {
 
+        this.categoriesArray = categoriesArray;
+
         categories = getCategoryName(categoriesArray);
 
         builder = new AlertDialog.Builder(getContext());
@@ -165,8 +185,8 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
             public void onClick(DialogInterface dialog, int item) {
                 // Do something with the selection
                 category = categoriesArray.get(item);
-
-                newAdPresenter.getSubCategories(category.getId());
+                categoryId = category.getId();
+                newAdPresenter.getSubCategories(categoryId);
             }
         });
         alert = builder.create();
@@ -177,13 +197,14 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
     @Override
     public void showSubcategoriesDialog(final ArrayList<Subcategory> subcategoriesArray) {
 
+        this.subcategoriesArray = subcategoriesArray;
         subcategories = getSubcategoryName(subcategoriesArray);
 
         builder.setItems(subcategories, new DialogInterface.OnClickListener() {
             public void onClick(DialogInterface dialog, int item) {
                 // Do something with the selection
                 subcategory = subcategoriesArray.get(item);
-
+                subcategoryId = subcategory.getId();
                 categoryName = category.getCategory() + "  > " + subcategory.getSubcategory();
 
                 categoryEditText.setText(categoryName);
@@ -225,6 +246,49 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
                         type = "none";
                         break;
                 }
+
+                showSwapCategoriesDialog();
+            }
+        });
+
+        alert = builder.create();
+        alert.show();
+    }
+
+    public void showSwapCategoriesDialog() {
+
+        categories = getCategoryName(categoriesArray);
+
+        builder = new AlertDialog.Builder(getContext());
+        builder.setTitle("Swap with categories");
+        builder.setItems(categories, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                // Do something with the selection
+                swapCategory = categoriesArray.get(item);
+                swapCategoryId = swapCategory.getId();
+                newAdPresenter.getSwapSubCategories(swapCategoryId);
+            }
+        });
+        alert = builder.create();
+        alert.show();
+
+    }
+
+
+    @Override
+    public void showSwapSubcategoriesDialog(final ArrayList<Subcategory> subcategoriesArray) {
+
+        subcategories = getSubcategoryName(subcategoriesArray);
+
+        builder.setItems(subcategories, new DialogInterface.OnClickListener() {
+            public void onClick(DialogInterface dialog, int item) {
+                // Do something with the selection
+                swapSubcategory = subcategoriesArray.get(item);
+                swapSubcategoryId = swapSubcategory.getId();
+                swapCategoryName = swapCategory.getCategory() + "  > " + swapSubcategory.getSubcategory();
+
+                swapCategoryEditText.setText(swapCategoryName);
+
             }
         });
 
@@ -235,6 +299,7 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
     @Override
     public void setAreas(ArrayList<Area> areas) {
 
+        this.areas = areas;
         ArrayList<String> areaNames = getAreaNames(areas);
 
         areasAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, areaNames);
@@ -246,6 +311,7 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
     @Override
     public void setConditions(ArrayList<Condition> conditions) {
 
+        this.conditions = conditions;
         ArrayList<String> conditionNames = getConditionNames(conditions);
 
         conditionAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, conditionNames);
@@ -255,6 +321,37 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
 
 
     }
+
+    @Override
+    public void setBrands(ArrayList<Brand> brands) {
+
+        this.brands = brands;
+        ArrayList<String> brandNames = getBrandNames(brands);
+
+        brandAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, brandNames);
+        brandAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        brandSpinner.setAdapter(brandAdapter);
+        brandSpinner.setOnItemSelectedListener(this);
+
+
+    }
+
+
+    @Override
+    public void setWarranty() {
+
+        warranty = new ArrayList<>();
+        warranty.add("Yes");
+        warranty.add("No");
+
+        warrantyAdapter = new ArrayAdapter<>(getContext(),android.R.layout.simple_spinner_item, warranty);
+        warrantyAdapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item);
+        warrantySpinner.setAdapter(warrantyAdapter);
+        warrantySpinner.setOnItemSelectedListener(this);
+
+
+    }
+
 
     @Override
     public void addAd() {
@@ -269,10 +366,25 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
         String creationTime = sdf.format(new Date());
         phone = SessionManager.getInstance(getContext()).getUserPhone();
         userId = SessionManager.getInstance(getContext()).getUserId();
+        description = descriptionEditText.getText().toString().trim();
 
-        //Ad ad = new Ad(userId, );
-        //newAdPresenter.createAd(ad);
+        Ad ad = new Ad(userId, categoryId,subcategoryId, conditionId, brandId, title, creationTime,
+                description, phone, images, imagesNames, swapCategoryId, swapSubcategoryId, areaId);
 
+        progressBar.setVisibility(View.VISIBLE);
+        newAdPresenter.createAd(ad);
+
+    }
+
+    @Override
+    public void hideProgress() {
+        progressBar.setVisibility(View.INVISIBLE);
+    }
+
+    @Override
+    public void navigateToMain() {
+        Navigation.findNavController(getActivity(), R.id.nav_host_fragment)
+                .navigate(NewAdFragmentDirections.actionNewAdFragmentToNavHome());
     }
 
     private boolean validate() {
@@ -285,6 +397,7 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
             valid = false;
         }
 
+        title = titleEditText.getText().toString().trim();
         if (title == null) {
 
             showMessage("Select the Title");
@@ -314,9 +427,19 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
         return conditionNames;
     }
 
+    private ArrayList<String> getBrandNames(ArrayList<Brand> brands) {
 
-    public static String[] getCategoryName(ArrayList<Category> arr)
-    {
+        ArrayList<String> brandNames = new ArrayList<>();
+
+        for (Brand brand : brands){
+            brandNames.add(brand.getBrand());
+        }
+        return brandNames;
+    }
+
+
+
+    public static String[] getCategoryName(ArrayList<Category> arr){
 
         // declaration and initialise String Array
         String[] str = new String[arr.size()];
@@ -331,8 +454,7 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
         return str;
     }
 
-    public static String[] getSubcategoryName(ArrayList<Subcategory> arr)
-    {
+    public static String[] getSubcategoryName(ArrayList<Subcategory> arr){
 
         // declaration and initialise String Array
         String[] str = new String[arr.size()];
@@ -356,15 +478,17 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
             warrantyInputLayout.setVisibility(View.GONE);
             operatorInputLayout.setVisibility(View.GONE);
             newAdPresenter.getCategories();
+        }else if (view == swapCategoryEditText){
+            showSwapCategoriesDialog();
         }else if (view == addImage){
-            getImages2();
+            getImages();
         }else if (view == addBtn){
             addAd();
         }
     }
 
 
-    public void getImages2(){
+    public void getImages(){
         ImagePicker.create(this)
                 .returnMode(ReturnMode.NONE) //set whether pick and / or camera action should return immediate result or not.
                 .folderMode(true) // folder mode (false by default)
@@ -439,7 +563,13 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
     public void onItemSelected(AdapterView<?> adapterView, View view, int i, long l) {
 
         if (adapterView.getId() == conditionSpinner.getId()){
-            conditionId = i;
+            conditionId = conditions.get(i).getId();
+        }else if (adapterView.getId() == brandSpinner.getId()){
+            brandId = brands.get(i).getId();
+        }else if (adapterView.getId() == areasSpinner.getId()){
+            areaId = areas.get(i).getId();
+        }else if (adapterView.getId() == warrantySpinner.getId()){
+            warrantyValue = warranty.get(i+1);
         }
     }
 

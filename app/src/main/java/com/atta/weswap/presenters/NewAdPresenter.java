@@ -6,6 +6,7 @@ import com.atta.weswap.model.APIClient;
 import com.atta.weswap.model.Ad;
 import com.atta.weswap.model.Area;
 import com.atta.weswap.model.AreaResult;
+import com.atta.weswap.model.Brand;
 import com.atta.weswap.model.CategoriesResult;
 import com.atta.weswap.model.Category;
 import com.atta.weswap.model.Condition;
@@ -48,6 +49,8 @@ public class NewAdPresenter implements NewAdContract.Presenter{
 
                 if (response.body() != null){
                     if (response.body().getCategories() != null){
+
+                        mView.setWarranty();
 
                         ArrayList<Category> categories = response.body().getCategories();
 
@@ -100,8 +103,6 @@ public class NewAdPresenter implements NewAdContract.Presenter{
     @Override
     public void getSubCategories(int catId) {
 
-
-
         Call<SubcategoriesResult> call = APIClient.getInstance().getApi().getSubcategories(catId);
 
 
@@ -118,6 +119,62 @@ public class NewAdPresenter implements NewAdContract.Presenter{
                         if (subcategories.size() > 0){
 
                             mView.showSubcategoriesDialog(subcategories);
+                        }else {
+                            mView.showMessage("Categories not found , try again later");
+                        }
+
+
+                        ArrayList<Brand> brands = response.body().getBrands();
+
+                        if (brands.size() > 0){
+
+                            mView.setBrands(brands);
+                        }
+
+                    }
+                }else {
+                    mView.showMessage("An error");
+                }
+
+
+            }
+
+            @Override
+            public void onFailure(Call<SubcategoriesResult> call, Throwable t) {
+
+
+                //mView.dismissProgressDialog();
+
+                mView.showMessage(t.getMessage());
+
+
+
+            }
+        });
+
+    }
+
+
+
+    @Override
+    public void getSwapSubCategories(int catId) {
+
+        Call<SubcategoriesResult> call = APIClient.getInstance().getApi().getSubcategories(catId);
+
+
+        call.enqueue(new Callback<SubcategoriesResult>() {
+            @Override
+            public void onResponse(Call<SubcategoriesResult> call, Response<SubcategoriesResult> response) {
+
+
+                if (response.body() != null){
+                    if (response.body().getSubcategories() != null){
+
+                        ArrayList<Subcategory> subcategories = response.body().getSubcategories();
+
+                        if (subcategories.size() > 0){
+
+                            mView.showSwapSubcategoriesDialog(subcategories);
                         }else {
                             mView.showMessage("Categories not found , try again later");
                         }
@@ -153,9 +210,12 @@ public class NewAdPresenter implements NewAdContract.Presenter{
                 ad.getUserId(),
                 ad.getCategoryId(),
                 ad.getSubcategoryId(),
+                ad.getSwapCategoryId(),
+                ad.getSwapSubcategoryId(),
                 ad.getDescription(),
                 ad.getConditionId(),
                 ad.getBrandId(),
+                ad.getAreaId(),
                 ad.getPhone(),
                 ad.getCreationTime(),
                 ad.getImages(),
@@ -165,9 +225,11 @@ public class NewAdPresenter implements NewAdContract.Presenter{
         call.enqueue(new Callback<Result>() {
             @Override
             public void onResponse(Call<Result> call, Response<Result> response) {
+                mView.hideProgress();
                 if (response.body() != null){
                     mView.showMessage(response.body().getMessage());
 
+                    mView.navigateToMain();
                 }else {
                     mView.showMessage("An error");
                 }
@@ -175,7 +237,7 @@ public class NewAdPresenter implements NewAdContract.Presenter{
 
             @Override
             public void onFailure(Call<Result> call, Throwable t) {
-
+                mView.hideProgress();
             }
         });
 
