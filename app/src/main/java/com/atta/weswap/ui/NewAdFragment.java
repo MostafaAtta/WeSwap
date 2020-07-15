@@ -17,6 +17,7 @@ import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.ProgressBar;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
@@ -170,7 +171,7 @@ public class NewAdFragment extends Fragment implements NewAdContract.View, View.
 
     @Override
     public void showMessage(String error) {
-
+        Toast.makeText(getContext(), error, Toast.LENGTH_LONG).show();
     }
 
     public void showCategoriesDialog(final ArrayList<Category> categoriesArray) {

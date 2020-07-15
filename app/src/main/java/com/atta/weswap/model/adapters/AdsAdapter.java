@@ -55,7 +55,7 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder> {
         final String[] images = ad.getImagesUrls();
         final String date = ad.getCreationTime();
         final String location = ad.getArea();
-        final String swapCategory = ad.getSwapCategory() + "  > " + ad.getSwapSubcategory();
+        final String swapCategory = "Swap with: " + ad.getSwapSubcategory();
 
         holder.adTitleTv.setText(title);
         holder.swapCategoryTv.setText(swapCategory);
@@ -68,8 +68,6 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder> {
             final String imageURL = APIClient.Images_BASE_URL + images[0];
             Picasso.get()
                     .load(imageURL)
-                    .resize(60, 60)
-                    .centerCrop()
                     .into(holder.imageView);
         }
 

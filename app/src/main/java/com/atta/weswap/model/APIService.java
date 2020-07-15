@@ -47,6 +47,11 @@ public interface APIService {
             @Path("subcategory_id") int subcategoryId
     );
 
+    @GET("get_my_ads/{user_id}")
+    Call<AdsResult> getMyAds(
+            @Path("user_id") int userId
+    );
+
     @FormUrlEncoded
     @POST("update_user")
     Call<Result> updateProfile(

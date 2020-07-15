@@ -12,22 +12,22 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 
-public class AdsPresenter implements AdsContract.Presenter {
+public class MyAdsPresenter implements MyAdsContract.Presenter {
 
-    private AdsContract.View mView;
+    private MyAdsContract.View mView;
 
     private Context mContext;
 
-    public AdsPresenter(AdsContract.View mView, Context mContext) {
+    public MyAdsPresenter(MyAdsContract.View mView, Context mContext) {
         this.mView = mView;
         this.mContext = mContext;
     }
 
     @Override
-    public void getAds(int subcategoryId) {
+    public void getMyAds(int userId) {
 
         //defining the call
-        Call<AdsResult> call = APIClient.getInstance().getApi().getAds(subcategoryId);
+        Call<AdsResult> call = APIClient.getInstance().getApi().getMyAds(userId);
 
         //calling the api
         call.enqueue(new Callback<AdsResult>() {
