@@ -14,6 +14,7 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import com.atta.weswap.R;
 import com.atta.weswap.model.Ad;
+import com.atta.weswap.model.SessionManager;
 import com.atta.weswap.model.adapters.AdsAdapter;
 import com.atta.weswap.presenters.MyAdsContract;
 import com.atta.weswap.presenters.MyAdsPresenter;
@@ -36,9 +37,8 @@ public class MyAdsFragment extends Fragment implements MyAdsContract.View {
 
         recyclerView = root.findViewById(R.id.ads_recycler);
 
-        int subcategoryId = AdsFragmentArgs.fromBundle(getArguments()).getSubcatId();
         adsPresenter = new MyAdsPresenter(this, getContext());
-        adsPresenter.getMyAds(subcategoryId);
+        adsPresenter.getMyAds(SessionManager.getInstance(getContext()).getUserId());
 
         return root;
     }
