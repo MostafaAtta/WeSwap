@@ -52,6 +52,10 @@ public interface APIService {
             @Path("user_id") int userId
     );
 
+    @GET("get_fav_ads/{user_id}")
+    Call<AdsResult> getFavAds(
+            @Path("user_id") int userId
+    );
     @FormUrlEncoded
     @POST("update_user")
     Call<Result> updateProfile(

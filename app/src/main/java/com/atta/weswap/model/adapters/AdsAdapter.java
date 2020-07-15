@@ -9,11 +9,15 @@ import android.widget.ImageView;
 import android.widget.TextView;
 
 import androidx.annotation.NonNull;
+import androidx.navigation.Navigation;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.atta.weswap.R;
 import com.atta.weswap.model.APIClient;
 import com.atta.weswap.model.Ad;
+import com.atta.weswap.ui.AdsFragmentDirections;
+import com.atta.weswap.ui.FavoritesFragmentDirections;
+import com.atta.weswap.ui.MyAdsFragmentDirections;
 import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
@@ -24,13 +28,14 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder> {
     private List<Ad> ads;
     private Context context;
     private Activity activity;
+    String fragment;
 
-
-    public AdsAdapter(ArrayList<Ad> data, Context context, Activity activity) {
+    public AdsAdapter(ArrayList<Ad> data, Context context, Activity activity, String fragment) {
 
         this.ads = data;
         this.context = context;
         this.activity = activity;
+        this.fragment = fragment;
     }
 
     @NonNull
@@ -73,10 +78,19 @@ public class AdsAdapter extends RecyclerView.Adapter<AdsAdapter.MyViewHolder> {
 
         holder.itemView.setOnClickListener(view -> {
 
-            //Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(HomeFragmentDirections.actionNavHomeToSubCategoriesFragment(category.getId()));
-            /*Intent intent = new Intent(context.getApplicationContext(), ProductsActivity.class);
-            intent.putExtra("cat_id", category.getId());
-            context.startActivity(intent);*/
+            if (fragment.equals("ads")){
+                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(AdsFragmentDirections.actionAdsFragmentToAdDetaildFragment(ad));
+
+            }else  if (fragment.equals("my ads")){
+                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(MyAdsFragmentDirections.actionNavMyAdsToAdDetaildFragment(ad));
+
+            }else  if (fragment.equals("fav")){
+                Navigation.findNavController(activity, R.id.nav_host_fragment).navigate(FavoritesFragmentDirections.actionNavFavoritesToAdDetaildFragment(ad));
+
+            }
+
+
+
         });
 
         holder.favImage.setOnClickListener(view -> {

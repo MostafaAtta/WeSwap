@@ -51,7 +51,7 @@ public class MyAdsFragment extends Fragment implements MyAdsContract.View {
 
     @Override
     public void showRecyclerView(ArrayList<Ad> ads ) {
-        myAdapter = new AdsAdapter(ads, getContext(), getActivity());
+        myAdapter = new AdsAdapter(ads, getContext(), getActivity(), "my ads");
 
         DividerItemDecoration decoration = new DividerItemDecoration(getContext(), DividerItemDecoration.VERTICAL);
 
